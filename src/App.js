@@ -51,7 +51,10 @@ function App() {
 
     function handleInput(e) {
         const input = e.target.value
-        const words = findWordsWithPrefix(trie, input)
+
+        const lastWord = input.split(' ').pop()
+        const words = findWordsWithPrefix(trie, lastWord)
+
         setSuggestions(words)
     }
 
