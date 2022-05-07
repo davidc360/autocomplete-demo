@@ -1,7 +1,15 @@
 import { useState } from "react"
 import './App.sass'
+import dict from './web2'
 
-const words = ["word", "wear", "weary", "wood"]
+let words
+let trie
+fetch(dict)
+    .then(response => response.text())
+    .then(text => {
+        words = text.split('\n')
+        trie = buildTrie(words)
+    })
 
 function buildTrie(words) {
     let root = {};
@@ -24,6 +32,8 @@ function findWordsStarting(node, current, result) {
 }
 
 function findWordsWithPrefix(trie, prefix) {
+    if (!prefix) return []
+
     for (const c of prefix) {
         if (!trie[c]) return [];
         trie = trie[c];
@@ -38,7 +48,6 @@ function findWordsWithPrefix(trie, prefix) {
 function App() {
     const [suggestions, setSuggestions] = useState([]);
 
-    const trie = buildTrie(words);
 
     function handleInput(e) {
         const input = e.target.value
