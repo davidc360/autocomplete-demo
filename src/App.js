@@ -2,8 +2,8 @@ import { useState } from "react"
 import './App.sass'
 import dict from './web2'
 
-let words
-let trie
+let words, trie
+
 fetch(dict)
     .then(response => response.text())
     .then(text => {
@@ -19,15 +19,15 @@ function buildTrie(words) {
             if (!current[c]) current[c] = {}
             current = current[c];
         }
-        current["$"] = true;
+        current.wordEnd = true;
     })
     return root
 }
 
-function findWordsStarting(node, current, result) {
+function findWordsFromNode(node, current, result) {
     for (const key in node) {
-        if (key === "$") result.push(current)
-        findWordsStarting(node[key], current + key, result)
+        if (key === "wordEnd") result.push(current)
+        findWordsFromNode(node[key], current + key, result)
     }
 }
 
@@ -40,7 +40,7 @@ function findWordsWithPrefix(trie, prefix) {
     }
 
     const results = [];
-    findWordsStarting(trie, prefix, results);
+    findWordsFromNode(trie, prefix, results);
 
     return results
 }
